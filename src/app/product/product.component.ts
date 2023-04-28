@@ -8,65 +8,52 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class ProductComponent implements OnInit {
 
-  showAddProd = false
-  showAddVen = false
-  showAddCat = false
-  showEdit = false
-  showViewProd = false
-  showViewVen = false
-  showViewCat = false
-  showDelProd = false
-  showGetByCat = false
-  showGetByVen = false
-  showCheap = false
+  deleteByName=''; catName=''; venName=''; 
+  
+  cheap=0; showProds='all'; editIndex=0;
 
-  products: any[] = []
-  vendor: any[] = []
-  category: any[] = []
+  updateName=''; updatePrice=''; updateVendor=''; updateCategory='';
 
-  productForm!: FormGroup;
-  vendorForm!: FormGroup;
-  categoryForm!: FormGroup;
+  showAddProd = false; showAddVen = false; showAddCat = false; showEdit = false;
+  showViewProd = false; showViewVen = false; showViewCat = false; showDelProd = false;
+  showGetByCat = false; showGetByVen = false; showCheap = false;
+
+  products: any[] = []; vendor: any[] = []; category: any[] = [];
+
+  productForm!: FormGroup; vendorForm!: FormGroup; categoryForm!: FormGroup;
 
   constructor(){}
 
   ngOnInit(): void {
 
-    const id = new FormControl('', Validators.required)
-    const name = new FormControl('', Validators.required)
-    const price = new FormControl('', Validators.required)
-    const ven_id = new FormControl('', Validators.required)
-    const cat_id = new FormControl('', Validators.required)
-    const first_name = new FormControl('', Validators.required)
-    const last_name = new FormControl('', Validators.required)
-    const status = new FormControl('', Validators.required)
+    const id = new FormControl()
 
     this.productForm = new FormGroup(
       {
         id: id,
-        name: name,
-        price: price,
-        vendorId: ven_id,
-        categoryId: cat_id
+        name: new FormControl('', Validators.required),
+        price: new FormControl('', Validators.required),
+        vendorId: new FormControl('', Validators.required),
+        categoryId: new FormControl('', Validators.required),
       }
     )
 
     this.vendorForm = new FormGroup(
-      {id: ven_id,
-       firstName: first_name,
-       lastName: last_name,
-       status: status
+      {
+        id: new FormControl('', Validators.required),
+        firstName: new FormControl('', Validators.required),
+        lastName: new FormControl('', Validators.required),
+        status: new FormControl('', Validators.required)
       }
     )
 
     this.categoryForm = new FormGroup(
-      {id: cat_id,
-       name: name,
-       status: status
+      {
+        id: new FormControl('', Validators.required),
+        name: new FormControl('', Validators.required),
+        status: new FormControl('', Validators.required)
       }
     )
-
-
   }
 
   addProduct(){
@@ -74,10 +61,6 @@ export class ProductComponent implements OnInit {
     this.productForm.get('id')?.setValue(Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000);
     const data = this.productForm.getRawValue()
     this.products.push(data)
-  }
-
-  editProduct(){
-    console.log('edit prod');
   }
 
   addVendor(){
@@ -90,6 +73,27 @@ export class ProductComponent implements OnInit {
     this.showAddCat = false
     const data = this.categoryForm.getRawValue()
     this.category.push(data)
+  }
+
+  editProduct(i:number){
+    this.showViewProd = false
+    this.showEdit = true
+    this.editIndex = i
+    this.updateName = this.products[i].name
+    this.updatePrice = this.products[i].price 
+    this.updateVendor = this.products[i].vendorId 
+    this.updateCategory = this.products[i].categoryId
+  }
+
+  updateProduct(){
+    this.products[this.editIndex].name = this.updateName
+    this.products[this.editIndex].price = this.updatePrice
+    this.products[this.editIndex].vendorId = this.updateVendor
+    this.products[this.editIndex].categoryId = this.updateCategory
+    this.showEdit = false
+    this.showViewProd = true
+    this.editIndex = 0
+    this.updateName=''; this.updatePrice=''; this.updateVendor=''; this.updateCategory=''; 
   }
 
   deleteVendor(i: number){
@@ -131,22 +135,29 @@ export class ProductComponent implements OnInit {
 
   deleteProductByName(){
     this.showDelProd = false
-    console.log('del prod by name');
+    for(let i=0;i<this.products.length;i++){
+      if(this.deleteByName==this.products[i].name){
+        this.products.splice(i,1)
+      }
+    }
   }  
 
   getCategoryProducts(){
     this.showGetByCat = false
-    console.log('get cat prod');
+    this.showProds='cat'
+    this.showViewProd = true
   }
 
   getVendorProducts(){
     this.showGetByVen = false
-    console.log('get ven prod');
+    this.showProds='ven'
+    this.showViewProd = true
   }
   
   getCheapProducts(){
     this.showCheap = false
-    console.log('get cheap');
+    this.showProds='cheap'
+    this.showViewProd = true
   }
 
 }
