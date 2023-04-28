@@ -1,0 +1,184 @@
+<div class="btnContainer">
+    <h1>Actions</h1>
+    <button class="button" (click)="showAddProd=!showAddProd">Add Product</button>
+    <button class="button" (click)="showAddVen=!showAddVen">Add Vendor</button>
+    <button class="button" (click)="showAddCat=!showAddCat">Add Category</button>
+    <button class="button" (click)="showViewProd=!showViewProd">View Products</button>
+    <button class="button" (click)="showViewVen=!showViewVen">View Vendors</button>
+    <button class="button" (click)="showViewCat=!showViewCat">View Categories</button>
+    <button class="button" (click)="showEdit=!showEdit">Edit Product</button>
+    <button class="button" (click)="showDelProd=!showDelProd">Delete Product by Name</button>
+    <button class="button" (click)="showGetByCat=!showGetByCat">Get Products by Category</button>
+    <button class="button" (click)="showGetByVen=!showGetByVen">Get Products by Vendor</button>
+    <button class="button" (click)="showCheap=!showCheap">Get Cheap Products</button>
+</div>
+
+<div class="modal-1" [hidden]="!showAddProd">
+    <div class="product-add">
+        <h1>Add Product</h1>
+        <form (ngSubmit)="addProduct()" [formGroup]="productForm">
+            <input type="text" placeholder="Name" formControlName="name">
+            <input type="text" placeholder="Price" formControlName="price">
+            <label for="">Select a Category</label>
+            <select formControlName="categoryId">
+                <option *ngFor="let cat of category" [value]="cat.id">{{cat.name}}</option>
+            </select>
+            <label for="">Select a Vendor</label>
+            <select formControlName="vendorId">
+                <option *ngFor="let ven of vendor" [value]="ven.id">{{ven.firstName}} {{ven.lastName}}</option>
+            </select>
+            <button type="submit">Add Product</button>
+            <button (click)="showAddProd=!showAddProd">Cancel</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal-2" [hidden]="!showAddVen">
+    <div class="vendor-add">
+        <h1>Add Vendor</h1>
+        <form (ngSubmit)="addVendor()" [formGroup]="vendorForm">
+            <input type="text" placeholder="ID" formControlName="id">
+            <input type="text" placeholder="First Name" formControlName="firstName">
+            <input type="text" placeholder="Last Name" formControlName="lastName">
+            <input type="text" placeholder="Status" formControlName="status">
+            <button  type="submit">Add Vendor</button>
+            <button (click)="showAddVen=!showAddVen">Cancel</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal-3" [hidden]="!showAddCat">
+    <div class="cat-add">
+        <h1>Add Category</h1>
+        <form (ngSubmit)="addCategory()" [formGroup]="categoryForm">
+            <input type="text" placeholder="ID" formControlName="id">
+            <input type="text" placeholder="Name" formControlName="name">
+            <input type="text" placeholder="Status" formControlName="status">
+            <button type="submit">Add Category</button>
+            <button (click)="showAddCat=!showAddCat">Cancel</button>
+        </form>
+    </div>   
+</div>
+
+<div class="modal-5" [hidden]="!showViewProd">
+    <div class="prod-view">
+        <table>
+            <thead>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Vendor ID</th>
+                <th>Category ID</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let prod of products; let i=index">
+                    <td>{{prod.id}}</td>
+                    <td>{{prod.name}}</td>
+                    <td>{{prod.price}}</td>
+                    <td>{{prod.vendorId}}</td>
+                    <td>{{prod.categoryId}}</td>
+                    <td>
+                        <button class="button" (click)="editProduct()">Edit</button>
+                    </td>
+                    <td>
+                        <button class="button" (click)="deleteProductById(i)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button (click)="showViewProd=!showViewProd">Close</button>
+    </div>
+</div>
+
+<div class="modal-6" [hidden]="!showViewVen">
+    <div class="ven-view">
+        <table>
+            <thead>
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Status</th>
+                <th>Delete</th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let ven of vendor;let i=index">
+                    <td>{{ven.id}}</td>
+                    <td>{{ven.firstName}}</td>
+                    <td>{{ven.lastName}}</td>
+                    <td>{{ven.status}}</td>
+                    <td>
+                        <button class="button" (click)="deleteVendor(i)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button (click)="showViewVen=!showViewVen">Close</button>
+    </div>
+</div>
+
+<div class="modal-7" [hidden]="!showViewCat">
+    <div class="cat-view">
+        <table>
+            <thead>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Delete</th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let cat of category;let i=index">
+                    <td>{{cat.id}}</td>
+                    <td>{{cat.name}}</td>
+                    <td>{{cat.status}}</td>
+                    <td>
+                        <button class="button" (click)="deleteCategory(i)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button (click)="showViewCat=!showViewCat">Close</button>
+    </div>
+</div>
+
+<div class="modal-8" [hidden]="!showDelProd">
+    <div class="prod-delete">
+        <h2>Enter Product Name to Delete</h2>
+        <label for="">Name</label>
+        <input type="text" id="prod_name" placeholder="Product Name" />
+        <button (click)="deleteProductByName()" type="button">Delete</button>
+        <button (click)="showDelProd=!showDelProd">Cancel</button>
+    </div>
+</div>
+
+<div class="modal-9" [hidden]="!showGetByCat">
+    <div class="prod-show">
+        <h2>Enter Category Name to View Products</h2>
+        <label for="">Category Name</label>
+        <input type="text" id="cat_name" placeholder="Category Name" />
+        <button (click)="getCategoryProducts()" type="button">View</button>
+        <button (click)="showGetByCat=!showGetByCat">Cancel</button>
+    </div>
+</div>
+
+<div class="modal-10" [hidden]="!showGetByVen">
+    <div class="prod-show">
+        <h2>Enter Vendor Name to View Products</h2>
+        <label for="">Vendor Name</label>
+        <input type="text" id="ven_name" placeholder="Vendor Name" />
+        <button (click)="getVendorProducts()" type="button">View</button>
+        <button (click)="showGetByVen=!showGetByVen">Cancel</button>
+    </div>
+</div>
+
+<div class="modal-11" [hidden]="!showCheap">
+    <div class="prod-show">
+        <h2>Enter Price Filter</h2>
+        <label for="">Max Price</label>
+        <input type="text" id="maxPrice" placeholder="Price" />
+        <button (click)="getCheapProducts()" type="button">View</button>
+        <button (click)="showCheap=!showCheap">Cancel</button>
+    </div>
+</div>
+

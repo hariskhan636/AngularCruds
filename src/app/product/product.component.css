@@ -1,0 +1,105 @@
+.button{
+  background-color: greenyellow;
+  color: black;
+  padding: 15px;
+  margin: 10px;
+  border: none;
+  border-radius: 3px;
+  width:80%;
+  justify-content: center;
+}
+
+button{
+  background-color: greenyellow;
+  color: black;
+  padding: 15px;
+  margin: 10px;
+  border: none;
+  border-radius: 3px;
+  width: 45%;
+}
+
+input {
+  width: calc(100% - 20px);
+  padding: 10px;
+  border-radius: 3px;
+  border: 1px solid black;
+  margin-bottom: 15px;
+}
+
+.btnContainer h1 {
+  text-align: center;
+}
+
+.btnContainer {
+  border: 1px solid black;
+  width: 20%;
+  text-align: center;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+table td,
+table th {
+  border: solid 1px black;
+  padding: 10px 15px;
+  text-align: center;
+}
+
+select {
+  width: calc(100% - 20px);
+  padding: 10px;
+  border-radius: 3px;
+  border: 1px solid black;
+}
+
+label {
+  width: 100%;
+  display: block;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  text-align: left;
+}
+
+.modal-1, .modal-2, .modal-3, .modal-4, 
+.modal-5, .modal-6, .modal-7, .modal-8,
+.modal-9, .modal-10, .modal-11{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: #cccccc2e;
+}
+
+.product-add, .vendor-add, .cat-add, .prod-delete,
+.prod-show {
+  border: 1px solid black;
+  padding: 10px;
+  margin: 10px;
+  width: 400px;
+  height: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  background-color: white;
+  text-align: center;
+}
+
+.prod-view, .ven-view, .cat-view{
+  border: 1px solid black;
+  padding: 10px;
+  margin: 10px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  background-color: white;
+  text-align: center;
+}
+
