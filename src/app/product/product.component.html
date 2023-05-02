@@ -3,7 +3,7 @@
     <button class="button" (click)="showAddProd=!showAddProd">Add Product</button>
     <button class="button" (click)="showAddVen=!showAddVen">Add Vendor</button>
     <button class="button" (click)="showAddCat=!showAddCat">Add Category</button>
-    <button class="button" (click)="showViewProd=!showViewProd; showProds='all'">View Products</button>
+    <button class="button" (click)="showViewProd=!showViewProd; showProds='all'; showProducts()">View Products</button>
     <button class="button" (click)="showViewVen=!showViewVen">View Vendors</button>
     <button class="button" (click)="showViewCat=!showViewCat">View Categories</button>
     <button class="button" (click)="showDelProd=!showDelProd">Delete Product by Name</button>
@@ -28,6 +28,10 @@
                 <option value="">Select a vendor</option>
                 <option *ngFor="let ven of vendor" [value]="ven.id">{{ven.firstName}} {{ven.lastName}}</option>
             </select>
+            <p *ngIf="name.errors?.['required'] || price.errors?.['required'] || 
+                vendorId.errors?.['required'] || categoryId.errors?.['required']">
+                * All fields are required
+            </p>
             <button type="submit" [disabled]="productForm.invalid">Add Product</button>
             <button (click)="showAddProd=!showAddProd">Cancel</button>
         </form>
@@ -50,6 +54,10 @@
                 <option value="">Select a vendor</option>
                 <option *ngFor="let ven of vendor" [value]="ven.id">{{ven.firstName}} {{ven.lastName}}</option>
             </select>
+            <p *ngIf="name.errors?.['required'] || price.errors?.['required'] || 
+                vendorId.errors?.['required'] || categoryId.errors?.['required']">
+                * All fields are required
+            </p>
             <button type="submit" [disabled]="productForm.invalid">Update</button>
             <button (click)="showEdit=!showEdit">Cancel</button>
         </form>
@@ -104,7 +112,7 @@
                 <th>Delete</th>
             </thead>
             <tbody *ngIf="showProds=='all'">
-                <tr *ngFor="let prod of products; let i=index">
+                <tr *ngFor="let prod of activeProducts; let i=index">
                     <td>{{prod.id}}</td>
                     <td>{{prod.name}}</td>
                     <td>{{prod.price}}</td>
@@ -128,7 +136,7 @@
             </thead>
             <tbody *ngIf="showProds=='cat'">
                 <ng-container *ngFor="let cat of category">
-                    <ng-container *ngIf="catName==cat.name">
+                    <ng-container *ngIf="catName==cat.name && cat.status=='active'">
                         <tr *ngFor="let prod of products">
                             <ng-container *ngIf="prod.categoryId==cat.id">
                                 <td>{{prod.id}}</td>
@@ -151,7 +159,7 @@
             </thead>
             <tbody *ngIf="showProds=='ven'">
                 <ng-container *ngFor="let ven of vendor">
-                    <ng-container *ngIf="venName==ven.firstName">
+                    <ng-container *ngIf="venName==ven.firstName && ven.status=='active'">
                         <tr *ngFor="let prod of products">
                             <ng-container *ngIf="prod.vendorId==ven.id">
                                 <td>{{prod.id}}</td>
@@ -205,7 +213,7 @@
                     <td>{{ven.firstName}}</td>
                     <td>{{ven.lastName}}</td>
                     <td>
-                        <button class="button">{{ven.status}}</button>
+                        <button class="button" (click)="toggleStatusVen(ven.status,i)">{{ven.status}}</button>
                     </td>
                     <td>
                         <button class="button" (click)="deleteVendor(i)">Delete</button>
@@ -231,7 +239,7 @@
                     <td>{{cat.id}}</td>
                     <td>{{cat.name}}</td>
                     <td>
-                        <button class="button">{{cat.status}}</button>
+                        <button class="button" (click)="toggleStatusCat(cat.status,i)">{{cat.status}}</button>
                     </td>
                     <td>
                         <button class="button" (click)="deleteCategory(i)">Delete</button>
@@ -263,13 +271,11 @@
     </div>
 </div>
 
-
-
 <div class="modal-10" [hidden]="!showGetByVen">
     <div class="prod-show">
         <h2>Enter Vendor Name to View Products</h2>
         <label for="">Vendor Name</label>
-        <input type="text" [(ngModel)]="venName" placeholder="Vendor Name" />
+        <input type="text" [(ngModel)]="venName" placeholder="Enter Vendor's First Name" />
         <button (click)="getVendorProducts()" type="button">View</button>
         <button (click)="showGetByVen=!showGetByVen">Cancel</button>
     </div>

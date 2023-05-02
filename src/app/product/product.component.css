@@ -108,3 +108,9 @@ label {
   text-align: center;
 }
 
+p{
+  color: red;
+  font-weight: bold;
+  text-align: left;
+}
+

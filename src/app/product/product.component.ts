@@ -14,11 +14,17 @@ export class ProductComponent implements OnInit {
 
   updateName=''; updatePrice=''; updateVendor=''; updateCategory='';
 
+  catStatus=''; venStatus='';
+
+  vendorIsActive=false; categoryIsActive=false;
+
   showAddProd = false; showAddVen = false; showAddCat = false; showEdit = false;
   showViewProd = false; showViewVen = false; showViewCat = false; showDelProd = false;
   showGetByCat = false; showGetByVen = false; showCheap = false;
 
   products: any[] = []; vendor: any[] = []; category: any[] = [];
+
+  activeProducts: any[] = [];
 
   productForm!: FormGroup; vendorForm!: FormGroup; categoryForm!: FormGroup;
 
@@ -54,6 +60,21 @@ export class ProductComponent implements OnInit {
         status: new FormControl('', Validators.required)
       }
     )
+
+    
+  }
+
+  get name(){
+    return this.productForm.controls['name']
+  }
+  get price(){
+    return this.productForm.controls['price']
+  }
+  get vendorId(){
+    return this.productForm.controls['vendorId']
+  }
+  get categoryId(){
+    return this.productForm.controls['categoryId']
   }
 
   addProduct(){
@@ -61,6 +82,27 @@ export class ProductComponent implements OnInit {
     this.productForm.get('id')?.setValue(Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000);
     const data = this.productForm.getRawValue()
     this.products.push(data)
+  }
+
+  showProducts(){
+
+    this.activeProducts=[]
+    
+    for(let i=0;i<this.products.length;i++){
+      this.vendorIsActive = this.vendor.find(
+        (v) => v.id == this.products[i].vendorId && v.status == "active"
+      );
+  
+      this.categoryIsActive = this.category.find(
+        (c) => c.id == this.products[i].categoryId && c.status == "active"
+      );
+      
+      if(this.vendorIsActive && this.categoryIsActive){
+        this.activeProducts.push(this.products[i])
+      }
+    }
+    console.log(this.activeProducts);
+    
   }
 
   addVendor(){
@@ -98,32 +140,43 @@ export class ProductComponent implements OnInit {
 
   deleteVendor(i: number){
     const vendorId = this.vendor[i].id;
-    for (let i = 0; i < this.vendor.length; i++) {
-      if (this.vendor[i].id === vendorId) {
-        for (let j = 0; j < this.products.length; j++) {
-          if (this.products[j].vendorId === vendorId) {
-            this.products.splice(j, 1);
-            j--;
+    const confirmed =
+    confirm(`Are you sure you want to delete Vendor: ${this.vendor[i].id}? 
+    This will delete all of their products as well.`);
+
+    if(confirmed){
+      for (let i = 0; i < this.vendor.length; i++) {
+        if (this.vendor[i].id === vendorId) {
+          for (let j = 0; j < this.products.length; j++) {
+            if (this.products[j].vendorId === vendorId) {
+              this.products.splice(j, 1);
+              j--;
+            }
           }
+          this.vendor.splice(i, 1);
+          break;
         }
-        this.vendor.splice(i, 1);
-        break;
       }
-    }
+    } 
   }
 
   deleteCategory(i:number){
     const categoryId = this.category[i].id;
-    for (let i = 0; i < this.category.length; i++) {
-      if (this.category[i].id === categoryId) {
-        for (let j = 0; j < this.products.length; j++) {
-          if (this.products[j].categoryId === categoryId) {
-            this.products.splice(j, 1);
-            j--;
+    const confirmed =
+    confirm(`Are you sure you want to delete category: ${this.category[i].id}? 
+    This will delete all of their products as well.`);
+    if(confirmed){
+      for (let i = 0; i < this.category.length; i++) {
+        if (this.category[i].id === categoryId) {
+          for (let j = 0; j < this.products.length; j++) {
+            if (this.products[j].categoryId === categoryId) {
+              this.products.splice(j, 1);
+              j--;
+            }
           }
+          this.category.splice(i, 1);
+          break;
         }
-        this.category.splice(i, 1);
-        break;
       }
     }
   }
@@ -160,4 +213,24 @@ export class ProductComponent implements OnInit {
     this.showViewProd = true
   }
 
+  toggleStatusVen(status:string,i:number){
+    if(status=='active'){
+      this.vendor[i].status='inactive'
+    }else{
+      this.vendor[i].status='active'
+    }
+  }
+
+  toggleStatusCat(status:string,i:number){
+    if(status=='active'){
+      this.category[i].status='inactive'
+    }else{
+      this.category[i].status='active'
+    }
+  }
 }
+
+//view only active in all products
+//check for duplicates
+
+
